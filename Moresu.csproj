@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Component\Beatmap\" />
+    <Folder Include="Util\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Downloader" Version="2.0.6" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.0.0-ci2347" />
+    <PackageReference Include="MaterialXAMLDialogs" Version="1.0.6-ci1755" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="SharpCompress" Version="0.27.1" />
+  </ItemGroup>
+
+</Project>
