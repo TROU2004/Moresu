@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Component\Beatmap\" />
     <Folder Include="Util\" />
   </ItemGroup>
 
