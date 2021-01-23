@@ -1,11 +1,11 @@
 ﻿using Downloader;
 using MaterialDesignThemes.Wpf;
-using MaterialXAMLDialogs;
-using MaterialXAMLDialogs.Enums;
 using Moresu.Component.Client.ClientBuild;
 using Moresu.Component.Client.Download;
+using Moresu.Component.Domain;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Windows.Threading;
@@ -15,6 +15,11 @@ namespace Moresu.Component.Client
     class GameClient
     {
         public static readonly string ClientDir = Path.Combine(Directory.GetCurrentDirectory(), "client");
+        public static readonly List<IClientDownloadSource> Sources = new List<IClientDownloadSource> 
+        {
+            new SayoSource(), 
+            new PeppySource()
+        };
 
         public static bool CheckClient()
         {
@@ -26,49 +31,47 @@ namespace Moresu.Component.Client
             return true;
         }
 
-        public async static void PrepareClient()
+        public static void PrepareClient()
         {
             if (!CheckClient())
             {
-                var sayoSource = new SayoSource();
-                var peppySource = new PeppySource();
-                var config = new SelectionDialogConfiguration
+                var dialog = new SectionDialog("选择客户端下载源", "Moresu的使用需要下载osu!客户端\n请从下面几个镜像源中选择一个源\n国内推荐使用Sayobot源, Peppy源将调用osu!installer下载");
+                foreach (var source in Sources)
                 {
-                    Title = "选择客户端下载源"
-                };
-                var dialog = new SelectionDialog<string>(config);
-                var selectedItem = await dialog.Show("Root", new string[] { sayoSource.GetDisplayName(), peppySource.GetDisplayName() }, (s) => s);
-                switch (selectedItem)
-                {
-                    case "Sayobot镜像下载源":
-                        DownloadClient(sayoSource);
-                        break;
-                    case "Peppy官网下载源":
-                        DownloadClient(peppySource);
-                        break;
+                    dialog.AddSection(source.GetDisplayName(), (obj, args) =>
+                    {
+                        Host.Home.dialogHost_Root.IsOpen = false;
+                        DownloadClient(source);
+                    });
                 }
+                Host.Home.dialogHost_Root.ShowDialog(dialog);
             }
         }
 
-        private static void DownloadClient(IClientDownloadSource source)
+        public static void DownloadClient(IClientDownloadSource source)
         {
             var downloader = new DownloadService();
             downloader.DownloadFileAsync(source.GetDownloadLink(), Path.Combine(ClientDir, source.GetFileName()));
-            new ClientDownload(downloader, source.NeedUnzip()).Show();
+            Host.Home.dialogHost_Root.ShowDialog(new ClientDownload(downloader, source.NeedUnzip()));
         }
 
-        public static void BuildClient(BuildProperties properties)
+        public static void BuildClient(Profile.Profile profile)
         {
             if (CheckClient())
             {
-                properties.DoAllOperates();
+                var stopWatch = new Stopwatch();
+                stopWatch.Start();
+                profile.BuildProperties.DoAllOperates();
                 Host.Home.Visibility = System.Windows.Visibility.Hidden;
                 ClientGuard.RunOsuWithGuard(() =>
                 {
-                    properties.DoAllOperatesReverse();
+                    profile.BuildProperties.DoAllOperatesReverse();
                     Host.Home.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
                     {
                         Host.Home.Close();
+                        stopWatch.Stop();
+                        profile.PlayTimeSpan.Add(stopWatch.Elapsed);
+                        profile.Save();
                     }));
                 });
             }

@@ -7,8 +7,13 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\DefaultBG.jpg" />
+    <None Remove="Resources\DefaultBGSmall.jpg" />
+  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Component\Beatmap\" />
@@ -18,9 +23,13 @@
   <ItemGroup>
     <PackageReference Include="Downloader" Version="2.0.6" />
     <PackageReference Include="MaterialDesignThemes" Version="4.0.0-ci2347" />
-    <PackageReference Include="MaterialXAMLDialogs" Version="1.0.6-ci1755" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="SharpCompress" Version="0.27.1" />
+    <PackageReference Include="OsuParsers" Version="1.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\DefaultBG.jpg" />
+    <Resource Include="Resources\DefaultBGSmall.jpg" />
   </ItemGroup>
 
 </Project>

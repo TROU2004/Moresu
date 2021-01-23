@@ -1,12 +1,75 @@
-﻿<Window x:Class="Moresu.Component.Profile.ProfileCreate"
+﻿<UserControl x:Class="Moresu.Component.Profile.ProfileCreate"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:Moresu.Component.Profile"
         mc:Ignorable="d"
-        Title="ProfileCreate" Height="450" Width="800">
+        d:DesignWidth="500">
     <Grid>
-        
+        <StackPanel>
+            <DockPanel Margin="10" Height="90" VerticalAlignment="Top" HorizontalAlignment="Left">
+                <Image Source="/Resources/DefaultBGSmall.jpg" Stretch="Fill" Width="155" Height="90" ></Image>
+                <StackPanel>
+                    <DockPanel Margin="10">
+                        <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}">设定档名称:</TextBlock>
+                        <TextBox Name="textBox_profileName" FontSize="15px" Margin="10,0,0,0" materialDesign:HintAssist.Hint="My Osu! Collection" Style="{StaticResource MaterialDesignTextBox}"/>
+                    </DockPanel>
+                    <DockPanel Margin="10">
+                        <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}">创建时间:</TextBlock>
+                        <TextBox x:Name="textBox_createTime"  FontSize="15px" Margin="10,0,0,0" IsEnabled="False"  Style="{StaticResource MaterialDesignTextBox}" Cursor="IBeam"/>
+                    </DockPanel>
+                </StackPanel>
+            </DockPanel>
+            <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}" Margin="10">
+                客户端启动配置
+            </TextBlock>
+            <Expander Margin="10">
+                <ListBox>
+                    <DockPanel>
+                        <CheckBox IsChecked="True" Name="checkBox_osudb" />
+                        <StackPanel Margin="10">
+                            <TextBlock FontWeight="Bold" Text="使用独立的osu!.db" />
+                            <TextBlock Text="在游戏启动时使用该配置档独立的Map列表(推荐比赛赛图的配置档使用)" />
+                            <TextBlock Text="不勾选将使用全局配置档的Map列表, 显示你拥有的所有Map" />
+                            <TextBlock Text="勾选此项后需要到配置档设置选中要显示的Map, 不然游戏内将没有Map" />
+                        </StackPanel>
+                    </DockPanel>
+                    <DockPanel>
+                        <CheckBox IsChecked="True" Name="checkBox_scoresdb"/>
+                        <StackPanel Margin="10">
+                            <TextBlock FontWeight="Bold" Text="使用独立的Scores.db" />
+                            <TextBlock Text="在游戏启动时使用该配置档独立的分数数据库(推荐私服配置档使用)" />
+                            <TextBlock Text="不勾选将使用全局配置档的分数数据库, 所有分数将统一保存至全局" />
+                        </StackPanel>
+                    </DockPanel>
+                    <DockPanel>
+                        <CheckBox IsChecked="True" Name="checkBox_collectiondb"/>
+                        <StackPanel Margin="10">
+                            <TextBlock FontWeight="Bold" Text="使用独立的Collection.db" />
+                            <TextBlock Text="在游戏启动时使用该配置档独立的收藏数据库(推荐比赛赛图的配置档使用)" />
+                            <TextBlock Text="不勾选将使用全局配置档的收藏数据库, 所有收藏将统一显示" />
+                        </StackPanel>
+                    </DockPanel>
+                    <DockPanel>
+                        <CheckBox />
+                        <StackPanel Margin="10" Name="checkBox_cfg">
+                            <TextBlock FontWeight="Bold" Text="使用独立的osu!.cfg" />
+                            <TextBlock Text="在游戏启动时使用该配置档独立的游戏设置" />
+                            <TextBlock Text="不勾选将使用全局配置档的游戏设置, 所有设置保持统一" />
+                        </StackPanel>
+                    </DockPanel>
+                </ListBox>
+            </Expander>
+            <DockPanel Margin="10" HorizontalAlignment="Right">
+                <Button HorizontalAlignment="Right" Width="100" Style="{StaticResource MaterialDesignFlatButton}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Click="Button_OK_Click">
+                    确认
+                </Button>
+                <Button HorizontalAlignment="Right" Width="100" Style="{StaticResource MaterialDesignFlatButton}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
+                    取消
+                </Button>
+            </DockPanel>
+        </StackPanel>
     </Grid>
-</Window>
+</UserControl>

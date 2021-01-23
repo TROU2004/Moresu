@@ -1,29 +1,21 @@
-﻿using System;
+﻿using Moresu.Component.Profile;
+using OsuParsers.Database;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace Moresu.Component.Client.ClientBuild
 {
-    class BuildProperties
+    public class BuildProperties
     {
         public List<FileOperate> fileOperates = new List<FileOperate>();
 
-        public void AddFileOperates(FileOperate operate)
+        public void AddOperate(FileOperate operate)
         {
             fileOperates.Add(operate);
-        }
-
-        public FileOperate AddGameDirOperates(string path1, bool move)
-        {
-            var operate = new FileOperate(path1, Path.Combine(GameClient.ClientDir, Path.GetFileName(path1)), move);
-            fileOperates.Add(operate);
-            return operate;
-        }
-
-        public void RemoveFileOperates(FileOperate operate)
-        {
-            fileOperates.Remove(operate);
         }
 
         public void DoAllOperates()

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MaterialDesignThemes.Wpf;
+using Moresu.Component.Profile;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -21,6 +23,22 @@ namespace Moresu
         {
             InitializeComponent();
             Host.Home = this;
+            Host.StartupPrepare();
+        }
+
+        private void Button_AddProfile_Click(object sender, RoutedEventArgs e)
+        {
+            dialogHost_Root.ShowDialog(new ProfileCreate());
+        }
+
+        private void ColorZone_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            DragMove();
+        }
+
+        private void Button_Exit_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

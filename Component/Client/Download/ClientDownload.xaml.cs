@@ -21,7 +21,7 @@ namespace Moresu.Component.Client.Download
     /// <summary>
     /// ClientDownload.xaml 的交互逻辑
     /// </summary>
-    public partial class ClientDownload : Window
+    public partial class ClientDownload : UserControl
     {
         public bool NeedUnzip { get; set; }
         public DownloadService Downloader { get; set; }
@@ -48,11 +48,13 @@ namespace Moresu.Component.Client.Download
                         progressBar.IsIndeterminate = true;
                         textBlock_State.Text = "解压中...";
                     }));
-                    new ZipArchive(File.Open(Downloader.Package.FileName, FileMode.Open)).ExtractToDirectory(GameClient.ClientDir);
+                    Stream stream = File.Open(Downloader.Package.FileName, FileMode.Open);
+                    new ZipArchive(stream).ExtractToDirectory(GameClient.ClientDir);
+                    stream.Close();
                     File.Delete(Downloader.Package.FileName);
-                    ClientDL.Dispatcher.BeginInvoke(new Action(() =>
+                    Host.Home.Dispatcher.BeginInvoke(new Action(() =>
                     {
-                        ClientDL.Close();
+                        Host.Home.dialogHost_Root.IsOpen = false;
                     }));
                 })).Start();
             }

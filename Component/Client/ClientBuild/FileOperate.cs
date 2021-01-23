@@ -1,36 +1,41 @@
-﻿using System;
+﻿using Moresu.Component.Profile;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
 namespace Moresu.Component.Client.ClientBuild
 {
-    class FileOperate
+    public class FileOperate
     {
-        public string Path1, Path2;
-        public bool Move;
+        public string ProfileName, ItemName;
+        public bool Move, ReverseMove;
 
-        public FileOperate(string path1, string path2, bool move)
+        public FileOperate(string profileName, string itemName, bool move, bool reverseMove)
         {
-            Path1 = path1;
-            Path2 = path2;
+            ProfileName = profileName;
+            ItemName = itemName;
             Move = move;
+            ReverseMove = reverseMove;
         }
 
+        //From Profile to GameFolder
         public void Operate()
         {
-            DoOperate(Path1, Path2);
+            DoOperate(Path.Combine(Profiles.ProfilesDir, ProfileName, ItemName), Path.Combine(GameClient.ClientDir, ItemName), Move);
         }
 
+        //From GameFolder to Profile
         public void OperateReverse()
         {
-            DoOperate(Path2, Path1);
+            
+            DoOperate(Path.Combine(GameClient.ClientDir, ItemName), Path.Combine(Profiles.ProfilesDir, ProfileName, ItemName), ReverseMove);
         }
 
-        private void DoOperate(string a, string b)
+        private void DoOperate(string a, string b, bool move)
         {
             if (File.Exists(b)) File.Delete(b);
-            if (Move)
+            if (move)
             {
                 File.Move(a, b);
             }

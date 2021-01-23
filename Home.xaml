@@ -5,20 +5,34 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:Moresu"
-        mc:Ignorable="d"
-        Title="Home" Height="650" Width="1000">
+        mc:Ignorable="d" WindowStyle="None"
+        Title="Home" Height="570" Width="845">
     <Grid>
-        <materialDesign:DialogHost Identifier="Root">
+        <materialDesign:DialogHost Name="dialogHost_Root" Identifier="Root">
             <Grid>
-                <materialDesign:ColorZone Mode="PrimaryDark" Padding="16" materialDesign:ShadowAssist.ShadowDepth="Depth3" ClipToBounds="False">
-                    <StackPanel Orientation="Horizontal">
-                        <ToggleButton Style="{DynamicResource MaterialDesignHamburgerToggleButton}" />
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="56" />
+                    <RowDefinition Height="500" />
+                </Grid.RowDefinitions>
+                <materialDesign:ColorZone Mode="PrimaryMid" Padding="12" ClipToBounds="False" MouseLeftButtonDown="ColorZone_MouseLeftButtonDown">
+                    <DockPanel>
                         <TextBlock FontSize="20" VerticalAlignment="Center" Margin="16 0 0 0"> Moresu!</TextBlock>
-                    </StackPanel>
+                        <DockPanel Margin="15,0,0,0" HorizontalAlignment="Left">
+                            <Button x:Name="button_AddProfile" Padding="0" Style="{StaticResource MaterialDesignFlatLightBgButton}" Width="30" Height="30" Cursor="Hand" Click="Button_AddProfile_Click">
+                                <materialDesign:PackIcon Kind="Add"></materialDesign:PackIcon>
+                            </Button>
+                            <Button Padding="0" Style="{StaticResource MaterialDesignFlatLightBgButton}" Margin="10,0,0,0" Width="30" Height="30" Cursor="Hand">
+                                <materialDesign:PackIcon Kind="About"></materialDesign:PackIcon>
+                            </Button>
+                        </DockPanel>
+                        <Button x:Name="button_Exit" HorizontalAlignment="Right" Style="{StaticResource MaterialDesignFlatAccentButton}" Click="Button_Exit_Click" Cursor="Hand">
+                            <materialDesign:PackIcon Kind="WindowClose" Foreground="White" />
+                        </Button>
+                    </DockPanel>
                 </materialDesign:ColorZone>
-                <DockPanel>
-
-                </DockPanel>
+                <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                    <WrapPanel Name="wrapPanel_Items" ScrollViewer.CanContentScroll="True" />
+                </ScrollViewer>
             </Grid>
         </materialDesign:DialogHost>
     </Grid>
