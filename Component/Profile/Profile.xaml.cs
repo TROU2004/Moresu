@@ -1,13 +1,14 @@
 ﻿using MaterialDesignThemes.Wpf;
 using Moresu.Component.Client;
-using Moresu.Component.Client.ClientBuild;
+using Moresu.Component.Content.Beatmaps;
+using Moresu.Component.Content.Collections;
+using Moresu.Component.Content.Scores;
 using Moresu.Component.Domain;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -17,6 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using Path = System.IO.Path;
 
 namespace Moresu.Component.Profile
@@ -28,41 +30,32 @@ namespace Moresu.Component.Profile
     public partial class Profile : UserControl
     {
         [JsonProperty]
-        public string ProfileName { get; set; }
-        
-        private string displayName;
+        public string ProfileName { get; private set; }
         [JsonProperty]
-        public string DisplayName
-        {
-            get { return displayName; }
-            set
-            { 
-                displayName = value;
-                textBlock_ProfileName.Text = displayName;
-            }
-        }
-
+        public string DisplayName;
         [JsonProperty]
         public DateTime CreateTime;
-
-        private TimeSpan playTimeSpan;
         [JsonProperty]
-        public TimeSpan PlayTimeSpan
-        {
-            get { return playTimeSpan; }
-            set 
-            {
-                textBlock_PlayTime.Text = ((int)Math.Ceiling(value.TotalHours)).ToString() + "小时";
-                playTimeSpan = value; 
-            }
-        }
-
+        private TimeSpan PlayTimeSpan = new TimeSpan();
         [JsonProperty]
-        public BuildProperties BuildProperties;
+        public ScoreData ScoreData;
+        [JsonProperty]
+        public BeatmapData BeatmapData;
+        [JsonProperty]
+        public CollectionData CollectionData;
 
         private Profile()
         {
             InitializeComponent();
+        }
+
+        public Profile(string name)
+        {
+            InitializeComponent();
+            ProfileName = name;
+            ScoreData = new ScoreData(name);
+            BeatmapData = new BeatmapData(name);
+            CollectionData = new CollectionData(name);
         }
 
         public void Save()
@@ -88,21 +81,60 @@ namespace Moresu.Component.Profile
             {
                 var profile = new Profile
                 {
-                    ProfileName = name,
-                    DisplayName = name,
+                    ProfileName = name
                 };
+                profile.SetDisplayName(name);
                 Profiles.ProfileList.Add(profile);
                 Host.Home.wrapPanel_Items.Children.Add(profile);
-
+                profile.Save();
+                profile.ScoreData = new ScoreData(name);
+                profile.BeatmapData = new BeatmapData(name);
+                profile.CollectionData = new CollectionData(name);
                 return profile;
             }
             return null;
         }
 
-        public void Rename(string name)
+        public void SetDisplayName(string name)
         {
             DisplayName = name;
+            textBlock_ProfileName.Text = name;
+        }
+
+        public void Rename(string name)
+        {
+            SetDisplayName(name);
             Save();
+        }
+
+        public void AddPlayTime(TimeSpan timeSpan)
+        {
+            if (ProfileName != "global")
+            {
+                Profiles.GetProfileFromName("global").AddPlayTime(timeSpan);
+            }
+            PlayTimeSpan = PlayTimeSpan.Add(timeSpan);
+            Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                textBlock_PlayTime.Text = ((int)Math.Ceiling(PlayTimeSpan.TotalHours)).ToString() + "小时";
+            }));
+            Save();
+        }
+
+        public void ApplyToGlobal()
+        {
+            if (ProfileName != "global")
+            {
+                var global = Profiles.GetProfileFromName("global");
+                BeatmapData.ReadBeatmap();
+                ScoreData.ReadScore();
+                global.BeatmapData.ReadBeatmap();
+                global.ScoreData.ReadScore();
+                global.BeatmapData.UnionBeatmap(BeatmapData.Beatmaps);
+                global.ScoreData.UnionScore(ScoreData.Scores);
+                global.BeatmapData.SaveBeatmaps();
+                global.ScoreData.SaveScores();
+            }
         }
 
         public void Remove()
@@ -127,7 +159,16 @@ namespace Moresu.Component.Profile
             if (File.Exists(Path.Combine(path)))
             {
                 var profile = JObject.Parse(File.ReadAllText(Path.Combine(path))).ToObject<Profile>();
-                Host.Home.wrapPanel_Items.Children.Add(profile);
+                profile.textBlock_ProfileName.Text = profile.DisplayName;
+                if (profile.ProfileName == "global")
+                {
+                    profile.dockPanel_Controls.IsEnabled = false;
+                    Host.Home.wrapPanel_Items.Children.Insert(0, profile);
+                }
+                else
+                {
+                    Host.Home.wrapPanel_Items.Children.Add(profile);
+                }
                 return profile;
             }
             return null;

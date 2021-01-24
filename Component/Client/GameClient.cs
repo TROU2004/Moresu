@@ -1,8 +1,8 @@
 ﻿using Downloader;
 using MaterialDesignThemes.Wpf;
-using Moresu.Component.Client.ClientBuild;
 using Moresu.Component.Client.Download;
 using Moresu.Component.Domain;
+using Moresu.Component.Profile;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -61,17 +61,21 @@ namespace Moresu.Component.Client
             {
                 var stopWatch = new Stopwatch();
                 stopWatch.Start();
-                profile.BuildProperties.DoAllOperates();
+                profile.CollectionData.Operate();
+                profile.BeatmapData.Operate();
+                profile.ScoreData.Operate();
                 Host.Home.Visibility = System.Windows.Visibility.Hidden;
                 ClientGuard.RunOsuWithGuard(() =>
                 {
-                    profile.BuildProperties.DoAllOperatesReverse();
+                    profile.CollectionData.OperateReverse();
+                    profile.BeatmapData.OperateReverse();
+                    profile.ScoreData.OperateReverse();
+                    stopWatch.Stop();
+                    profile.AddPlayTime(stopWatch.Elapsed);
+                    profile.ApplyToGlobal();
                     Host.Home.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
                     {
-                        Host.Home.Close();
-                        stopWatch.Stop();
-                        profile.PlayTimeSpan.Add(stopWatch.Elapsed);
-                        profile.Save();
+                        Host.Close();
                     }));
                 });
             }

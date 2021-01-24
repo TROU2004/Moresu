@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -29,7 +30,8 @@ namespace Moresu.Component.Domain
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (textBox.Text != "")
+            Regex regex = new Regex(@"^([a-zA-Z]:\\)?[^\/\:\*\?\""\<\>\|\,]*$");
+            if (textBox.Text != "" && regex.Match(textBox.Text).Success)
             {
                 Action.Invoke(textBox.Text);
                 Host.Home.dialogHost_Root.IsOpen = false;

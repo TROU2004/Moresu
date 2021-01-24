@@ -11,20 +11,26 @@ using System.Text;
 
 namespace Moresu.Component.Content.Collections
 {
-    class CollectionTool
+    public class CollectionData : AbstractOperation
     {
-        private static int OsuVersion;
+        private int OsuVersion;
+        public List<Collection> Collections = new List<Collection>();
 
-        public static List<Collection> ReadCollection(Profile.Profile profile)
+        public CollectionData(string name)
         {
-            var db = DatabaseDecoder.DecodeCollection(Path.Combine(Profiles.ProfilesDir, profile.ProfileName, "collection.db"));
-            OsuVersion = db.OsuVersion;
-            return db.Collections;
+            ProfileName = name;
         }
 
-        public static List<Collection> UnionCollection(List<Collection> list1, List<Collection> list2)
+        public void ReadCollection()
         {
-            var list = list1.Union(list2, new CollectionRules()).ToList();
+            var db = DatabaseDecoder.DecodeCollection(Path.Combine(Profiles.ProfilesDir, ProfileName, "collection.db"));
+            OsuVersion = db.OsuVersion;
+            Collections = db.Collections;
+        }
+
+        public void UnionCollection(List<Collection> yourlist)
+        {
+            var list = Collections.Union(yourlist, new CollectionRules()).ToList();
             var newList = new List<Collection>();
             bool doEffect;
             foreach (var item in list)
@@ -47,18 +53,30 @@ namespace Moresu.Component.Content.Collections
             {
                 item.Count = item.MD5Hashes.Count;
             }
-            return newList;
+            Collections = newList;
         }
 
-        public static void SaveCollections(Profile.Profile profile, List<Collection> collections)
+        public void SaveCollections()
         {
-
             new CollectionDatabase
             {
-                CollectionCount = collections.Count,
+                CollectionCount = Collections.Count,
                 OsuVersion = OsuVersion, 
-                Collections = collections
-            }.Save(Path.Combine(Profiles.ProfilesDir, profile.ProfileName, "collections.db"));
+                Collections = Collections
+            }.Save(Path.Combine(Profiles.ProfilesDir, ProfileName, "collections.db"));
+        }
+
+        public override string GetFileName()
+        {
+            return "collection.db";
+        }
+
+        public override void CreateEmpty()
+        {
+            if (Independent)
+            {
+                new CollectionDatabase().Save(Path.Combine(Profiles.ProfilesDir, ProfileName, "collection.db"));
+            }
         }
     }
 }

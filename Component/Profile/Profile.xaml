@@ -18,7 +18,7 @@
         </DockPanel>
         <DockPanel>
             <TextBlock VerticalAlignment="Center" x:Name="textBlock_PlayTime" Margin="5"></TextBlock>
-            <DockPanel Margin="5" HorizontalAlignment="Right">
+            <DockPanel x:Name="dockPanel_Controls" Margin="5" HorizontalAlignment="Right">
                 <Button Padding="0" Margin="5" Width="20" Height="20" Click="Button_Rename_Click">
                     <materialDesign:PackIcon Kind="Rename" />
                 </Button>

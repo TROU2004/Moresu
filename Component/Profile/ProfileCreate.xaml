@@ -33,7 +33,7 @@
                             <TextBlock FontWeight="Bold" Text="使用独立的osu!.db" />
                             <TextBlock Text="在游戏启动时使用该配置档独立的Map列表(推荐比赛赛图的配置档使用)" />
                             <TextBlock Text="不勾选将使用全局配置档的Map列表, 显示你拥有的所有Map" />
-                            <TextBlock Text="勾选此项后需要到配置档设置选中要显示的Map, 不然游戏内将没有Map" />
+                            <TextBlock Text="勾选此项后需要到配置档设置选中要显示的Map" />
                         </StackPanel>
                     </DockPanel>
                     <DockPanel>
@@ -50,14 +50,6 @@
                             <TextBlock FontWeight="Bold" Text="使用独立的Collection.db" />
                             <TextBlock Text="在游戏启动时使用该配置档独立的收藏数据库(推荐比赛赛图的配置档使用)" />
                             <TextBlock Text="不勾选将使用全局配置档的收藏数据库, 所有收藏将统一显示" />
-                        </StackPanel>
-                    </DockPanel>
-                    <DockPanel>
-                        <CheckBox />
-                        <StackPanel Margin="10" Name="checkBox_cfg">
-                            <TextBlock FontWeight="Bold" Text="使用独立的osu!.cfg" />
-                            <TextBlock Text="在游戏启动时使用该配置档独立的游戏设置" />
-                            <TextBlock Text="不勾选将使用全局配置档的游戏设置, 所有设置保持统一" />
                         </StackPanel>
                     </DockPanel>
                 </ListBox>

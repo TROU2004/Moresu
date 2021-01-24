@@ -5,7 +5,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 
-namespace Moresu.Component.Client.ClientBuild
+namespace Moresu.Component.Client
 {
     class ClientGuard
     {

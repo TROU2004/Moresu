@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Moresu.Component.Content;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -33,6 +34,23 @@ namespace Moresu.Component.Profile
             {
                 ProfileList.Add(Profile.LoadProfile(Path.Combine(path, "profile.json")));
             }
+            if (!HasProfile("global"))
+            {
+                ConstructGlobalProfile();
+            }
+        }
+
+        private static void ConstructGlobalProfile()
+        {
+            Directory.CreateDirectory(Path.Combine(ProfilesDir, "global"));
+            var profile = new Profile("global");
+            profile.dockPanel_Controls.IsEnabled = false;
+            profile.SetDisplayName("全局配置档");
+            profile.BeatmapData.CreateEmpty();
+            profile.ScoreData.CreateEmpty();
+            profile.CollectionData.CreateEmpty();
+            Host.Home.wrapPanel_Items.Children.Insert(0, profile);
+            profile.Save();
         }
     }
 }
